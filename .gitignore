@@ -10,3 +10,6 @@ compile_commands.json
 
 # VS Code
 .vscode/
+
+# Autre
+infos_projet.txt
