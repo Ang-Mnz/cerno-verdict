@@ -12,6 +12,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(SOURCES
 	src/main.cpp
 	src/memory/memory.cpp
+	src/communication/circular_buffer.cpp
 )
 
 add_executable(cerno_verdict
@@ -34,6 +35,17 @@ target_include_directories(memory_test
 		src
 )
 
+# Tests circular buffer
+add_executable(circular_buffer_test
+	tests/circular_buffer_test.cpp
+	src/communication/circular_buffer.cpp
+)
+
+target_include_directories(circular_buffer_test
+	PRIVATE
+		src
+)
+
 # CTests
 include(CTest)
 
@@ -42,4 +54,9 @@ enable_testing()
 add_test(
 	NAME memory_test
 	COMMAND memory_test
+)
+
+add_test(
+	NAME circular_buffer_test
+	COMMAND circular_buffer_test
 )
