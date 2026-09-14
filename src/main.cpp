@@ -1,8 +1,12 @@
 #include <iostream>
 
+#include "memory/memory.hpp"
+
 int main()
 {
-	std::cout << "Cerno Verdict started." << std::endl;
+	MemoryBuffer buffer(10);
+
+	std::cout << "Size: " << buffer.size() << std::endl;
 
 	return 0;
 }
