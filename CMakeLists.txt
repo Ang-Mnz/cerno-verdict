@@ -14,6 +14,7 @@ set(SOURCES
 	src/memory/memory.cpp
 	src/communication/circular_buffer.cpp
 	src/utils/bit_utils.cpp
+	src/hardware/register8.cpp
 )
 
 add_executable(cerno_verdict
@@ -58,6 +59,18 @@ target_include_directories(bit_utils_test
 		src
 )
 
+# Tests register8
+add_executable(register8_test
+	tests/register8_test.cpp
+	src/hardware/register8.cpp
+	src/utils/bit_utils.cpp
+)
+
+target_include_directories(register8_test
+	PRIVATE
+		src
+)
+
 # CTests
 include(CTest)
 
@@ -76,4 +89,9 @@ add_test(
 add_test(
 	NAME bit_utils_test
 	COMMAND bit_utils_test
+)
+
+add_test(
+	NAME register8_test
+	COMMAND register8_test
 )
