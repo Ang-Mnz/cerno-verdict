@@ -16,6 +16,7 @@ set(SOURCES
 	src/utils/bit_utils.cpp
 	src/hardware/register8.cpp
 	src/hardware/gpio_pin.cpp
+	src/communication/uart.cpp
 )
 
 add_executable(cerno_verdict
@@ -83,6 +84,18 @@ target_include_directories(gpio_pin_test
 		src
 )
 
+# Tests UART
+add_executable(uart_test
+	tests/uart_test.cpp
+	src/communication/uart.cpp
+	src/communication/circular_buffer.cpp
+)
+
+target_include_directories(uart_test
+	PRIVATE
+		src
+)
+
 # CTests
 include(CTest)
 
@@ -111,4 +124,9 @@ add_test(
 add_test(
 	NAME gpio_pin_test
 	COMMAND gpio_pin_test
+)
+
+add_test(
+	NAME uart_test
+	COMMAND uart_test
 )
