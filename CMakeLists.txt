@@ -13,6 +13,7 @@ set(SOURCES
 	src/main.cpp
 	src/memory/memory.cpp
 	src/communication/circular_buffer.cpp
+	src/utils/bit_utils.cpp
 )
 
 add_executable(cerno_verdict
@@ -46,6 +47,17 @@ target_include_directories(circular_buffer_test
 		src
 )
 
+# Tests bit utils
+add_executable(bit_utils_test
+	tests/bit_utils_test.cpp
+	src/utils/bit_utils.cpp
+)
+
+target_include_directories(bit_utils_test
+	PRIVATE
+		src
+)
+
 # CTests
 include(CTest)
 
@@ -59,4 +71,9 @@ add_test(
 add_test(
 	NAME circular_buffer_test
 	COMMAND circular_buffer_test
+)
+
+add_test(
+	NAME bit_utils_test
+	COMMAND bit_utils_test
 )
