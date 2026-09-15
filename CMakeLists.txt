@@ -15,6 +15,7 @@ set(SOURCES
 	src/communication/circular_buffer.cpp
 	src/utils/bit_utils.cpp
 	src/hardware/register8.cpp
+	src/hardware/gpio_pin.cpp
 )
 
 add_executable(cerno_verdict
@@ -71,6 +72,17 @@ target_include_directories(register8_test
 		src
 )
 
+# Tests gpio_pin
+add_executable(gpio_pin_test
+	tests/gpio_pin_test.cpp
+	src/hardware/gpio_pin.cpp
+)
+
+target_include_directories(gpio_pin_test
+	PRIVATE
+		src
+)
+
 # CTests
 include(CTest)
 
@@ -94,4 +106,9 @@ add_test(
 add_test(
 	NAME register8_test
 	COMMAND register8_test
+)
+
+add_test(
+	NAME gpio_pin_test
+	COMMAND gpio_pin_test
 )
