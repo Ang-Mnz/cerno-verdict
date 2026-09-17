@@ -11,5 +11,13 @@ compile_commands.json
 # VS Code
 .vscode/
 
+# STM32CubeIDE
+firmware/stm32/Debug/
+firmware/stm32/Release/
+firmware/stm32/.metadata/
+
+# STM32CubeIDE workspace metadata
+.metadata/
+
 # Autre
 infos_projet.txt
