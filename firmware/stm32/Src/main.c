@@ -23,36 +23,33 @@
   #warning "FPU is not initialized, but the project is compiling for an FPU. Please initialize the FPU before use."
 #endif
 
+#include "uart.h"
+#include "stm32g071xx.h"
+#include <string.h>
+
 int main(void)
 {
-	// Ouverture du GPIOA on passe le premier bit du RCC à 1 grâce à RCC_IOPENR_GPIOAEN
+    uart_init();
+
     RCC->IOPENR |= RCC_IOPENR_GPIOAEN;
 
-    // LD4 (LED 4) -> PA5 (GPIOA5)
+    // PA6 en sortie
+    GPIOA->MODER &= ~GPIO_MODER_MODE6;
+    GPIOA->MODER |= GPIO_MODER_MODE6_0;
 
-    // Effacer les deux bits liés à PA5
-    GPIOA->MODER &= ~GPIO_MODER_MODE5;
-    // Passer le premier bit PA5 à 1 pour configurer en sortie
-    GPIOA->MODER |= GPIO_MODER_MODE5_0;
-    // On configure la sortie PA5 à 1
-    GPIOA->ODR |= GPIO_ODR_OD5;
+    char command[16];
 
-    // SysTick = compteur.
-    // Cela tourne à 16Mhz.
-    // On initialise la valeur à partir de laquelle le compteur va démarrer.
-    SysTick->LOAD = 16000000 - 1;
-    // La valeur actuelle du compteur (pour réinitaliser le COUNTFLAG)
-    SysTick->VAL = 0;
-    // Configure et active le SysTick
-    SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_ENABLE_Msk;
+    while (1)
+    {
+        uart_receive_string(command, sizeof(command));
 
-    /* Loop forever */
-	for(;;){
-		// SysTick_CTRL_COUNTFLAG_Msk paasse à 1 si SysTick arrive à zero
-		if (SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk)
-		{
-			// XOR pour inverser le bit et passer la sortie PA5 à 1 ou 0 (eteindre ou allumer)
-			GPIOA->ODR ^= GPIO_ODR_OD5;
-		}
-	}
+        if (strcmp(command, "MOTION") == 0)
+        {
+            GPIOA->ODR |= GPIO_ODR_OD6;
+        }
+        else if (strcmp(command, "CLEAR") == 0)
+        {
+            GPIOA->ODR &= ~GPIO_ODR_OD6;
+        }
+    }
 }
