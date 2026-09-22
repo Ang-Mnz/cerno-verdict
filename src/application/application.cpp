@@ -3,8 +3,7 @@
 #include "application.hpp"
 
 Application::Application()
-    : uart_("/dev/ttyACM0", 115200),
-	  motion_active_(false)
+    : uart_("/dev/ttyACM0", 115200)
 {
 }
 
@@ -32,15 +31,21 @@ void Application::run()
             motion_detector_.detect(frame, motion_mask);
 
 		// Envois de commande au STM32
-		if (motion_detected && !motion_active_)
+		if (motion_detected &&
+    		(motion_events_.empty() ||
+			!motion_events_.back().is_active()))
 		{
+			motion_events_.emplace_back();
+			motion_events_.back().start(frame);
 			process_command("MOTION");
-			motion_active_ = true;
 		}
-		else if (!motion_detected && motion_active_)
+		else if (!motion_detected &&
+         		 !motion_events_.empty() &&
+         		 motion_events_.back().is_active())
 		{
+			motion_events_.back().end();
+			storage_.save(motion_events_.back());
 			process_command("CLEAR");
-			motion_active_ = false;
 		}
 
 		// Affichage de fenetres
@@ -53,10 +58,11 @@ void Application::run()
     }
 
 	// Plus de mouvment à la fin du programme
-	if (motion_active_)
+	if (!motion_events_.empty() &&
+		motion_events_.back().is_active())
 	{
+		motion_events_.back().end();
 		process_command("CLEAR");
-		motion_active_ = false;
 	}
 
     display_.close();

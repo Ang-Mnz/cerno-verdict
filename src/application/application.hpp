@@ -6,6 +6,8 @@
 #include "vision/camera.hpp"
 #include "vision/motion_detector.hpp"
 #include "vision/vision_display.hpp"
+#include "vision/motion_event.hpp"
+#include "application/events_storage.hpp"
 
 class Application
 {
@@ -19,8 +21,9 @@ private:
 	Camera camera_;
 	MotionDetector motion_detector_;
 	VisionDisplay display_;
+    EventStorage storage_;
 
-	bool motion_active_;
+	std::vector<MotionEvent> motion_events_;
 
     void process_command(const std::string& command);
 };

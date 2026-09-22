@@ -19,5 +19,8 @@ firmware/stm32/.metadata/
 # STM32CubeIDE workspace metadata
 .metadata/
 
+# Images events
+events/
+
 # Autre
 infos_projet.txt

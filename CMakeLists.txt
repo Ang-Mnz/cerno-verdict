@@ -15,9 +15,11 @@ set(SOURCES
 	src/main.cpp
 	src/communication/uart.cpp
 	src/application/application.cpp
+	src/application/events_storage.cpp
 	src/vision/camera.cpp
 	src/vision/motion_detector.cpp
 	src/vision/vision_display.cpp
+	src/vision/motion_event.cpp
 )
 
 add_executable(cerno_verdict
