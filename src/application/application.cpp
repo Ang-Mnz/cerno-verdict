@@ -52,6 +52,13 @@ void Application::run()
         }
     }
 
+	// Plus de mouvment à la fin du programme
+	if (motion_active_)
+	{
+		process_command("CLEAR");
+		motion_active_ = false;
+	}
+
     display_.close();
 }
 

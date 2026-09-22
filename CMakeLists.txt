@@ -17,6 +17,7 @@ set(SOURCES
 	src/application/application.cpp
 	src/vision/camera.cpp
 	src/vision/motion_detector.cpp
+	src/vision/vision_display.cpp
 )
 
 add_executable(cerno_verdict
