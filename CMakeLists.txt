@@ -11,12 +11,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Application principale
 set(SOURCES
 	src/main.cpp
-	src/memory/memory.cpp
-	src/communication/circular_buffer.cpp
-	src/utils/bit_utils.cpp
-	src/hardware/register8.cpp
-	src/hardware/gpio_pin.cpp
 	src/communication/uart.cpp
+	src/application/application.cpp
 )
 
 add_executable(cerno_verdict
