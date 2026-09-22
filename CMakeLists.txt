@@ -8,11 +8,15 @@ project(cerno_verdict
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+find_package(OpenCV REQUIRED)
+
 # Application principale
 set(SOURCES
 	src/main.cpp
 	src/communication/uart.cpp
 	src/application/application.cpp
+	src/vision/camera.cpp
+	src/vision/motion_detector.cpp
 )
 
 add_executable(cerno_verdict
@@ -22,6 +26,11 @@ add_executable(cerno_verdict
 target_include_directories(cerno_verdict
 	PRIVATE
 		src
+)
+
+target_link_libraries(cerno_verdict
+    PRIVATE
+        ${OpenCV_LIBS}
 )
 
 # Tests

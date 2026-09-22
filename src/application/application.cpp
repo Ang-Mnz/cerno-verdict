@@ -9,20 +9,38 @@ Application::Application()
 
 void Application::run()
 {
-    std::string command;
+    if (!camera_.open())
+    {
+        std::cerr << "Impossible d'ouvrir la caméra\n";
+        return;
+    }
+
+    cv::Mat frame;
 
     while (true)
     {
-        std::cout << "> ";
-        std::getline(std::cin, command);
-
-        if (command == "q")
+        if (!camera_.read(frame))
         {
+            std::cerr << "Impossible de lire une image\n";
             break;
         }
 
-        process_command(command);
+        if (motion_detector_.detect(frame))
+        {
+            std::cout << "Mouvement détecté !" << std::endl;
+        }
+
+        cv::imshow("Cerno Verdict", frame);
+
+        int key = cv::waitKey(1);
+
+        if (key == 'q' || key == 27)
+        {
+            break;
+        }
     }
+
+    cv::destroyAllWindows();
 }
 
 void Application::process_command(const std::string& command)
