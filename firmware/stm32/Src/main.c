@@ -37,6 +37,9 @@ int main(void)
     GPIOA->MODER &= ~GPIO_MODER_MODE6;
     GPIOA->MODER |= GPIO_MODER_MODE6_0;
 
+    // Eteindre la LED
+    GPIOA->ODR &= ~GPIO_ODR_OD6;
+
     char command[16];
 
     while (1)

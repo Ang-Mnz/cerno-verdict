@@ -1,12 +1,37 @@
 #include <iostream>
+#include <string>
 
-#include "memory/memory.hpp"
+#include "communication/uart.hpp"
 
 int main()
 {
-	MemoryBuffer buffer(10);
+    Uart uart("/dev/ttyACM0", 115200);
 
-	std::cout << "Size: " << buffer.size() << std::endl;
+    std::string command;
 
-	return 0;
+    while (true)
+    {
+        std::cout << "> ";
+        std::getline(std::cin, command);
+
+        if (command == "q")
+        {
+            break;
+        }
+
+        if (command == "MOTION")
+        {
+            uart.send("MOTION\n");
+        }
+        else if (command == "CLEAR")
+        {
+            uart.send("CLEAR\n");
+        }
+        else
+        {
+            std::cout << "Commande inconnue\n";
+        }
+    }
+
+    return 0;
 }
