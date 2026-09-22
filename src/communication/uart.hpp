@@ -1,20 +1,18 @@
 #pragma once
 
 #include <cstdint>
-
-#include "circular_buffer.hpp"
+#include <string>
 
 class Uart {
-	public:
+public:
 
-		Uart();
+    Uart(const std::string& device, uint32_t baudrate);
+    ~Uart();
 
-		bool send(uint8_t value);
-		bool receive(uint8_t& value);
+    bool send(uint8_t value);
+    bool send(const std::string& data);
 
-		void inject(uint8_t value);
+private:
 
-	private:
-
-		CircularBuffer rx_buffer_;
+    int fd_;
 };
