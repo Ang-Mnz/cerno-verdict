@@ -1,10 +1,11 @@
 #include "motion_detector.hpp"
 
+
 MotionDetector::MotionDetector()
 {
 }
 
-bool MotionDetector::detect(const cv::Mat& frame)
+bool MotionDetector::detect(const cv::Mat& frame, cv::Mat& motion_mask)
 {
     cv::Mat gray_frame;
     cv::Mat blurred_frame;
@@ -23,6 +24,7 @@ bool MotionDetector::detect(const cv::Mat& frame)
     if (previous_frame_.empty())
     {
         blurred_frame.copyTo(previous_frame_);
+		motion_mask = cv::Mat::zeros(blurred_frame.size(), CV_8UC1);
         return false;
     }
 
@@ -34,13 +36,15 @@ bool MotionDetector::detect(const cv::Mat& frame)
 	// On transforme les valeurs au dessus du seuil en 255 on met le reste à zero
     cv::threshold(
         difference,
-        difference,
-        25,
+        motion_mask,
+        config_.threshold_value,
         255,
         cv::THRESH_BINARY
     );
 
     previous_frame_ = blurred_frame.clone();
 
-    return cv::countNonZero(difference) > 1000;
+    int motion_pixels = cv::countNonZero(motion_mask);
+
+	return motion_pixels > config_.motion_pixel_threshold;
 }

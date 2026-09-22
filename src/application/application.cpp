@@ -3,7 +3,8 @@
 #include "application.hpp"
 
 Application::Application()
-    : uart_("/dev/ttyACM0", 115200)
+    : uart_("/dev/ttyACM0", 115200),
+	  motion_active_(false)
 {
 }
 
@@ -16,6 +17,7 @@ void Application::run()
     }
 
     cv::Mat frame;
+	cv::Mat motion_mask;
 
     while (true)
     {
@@ -25,22 +27,32 @@ void Application::run()
             break;
         }
 
-        if (motion_detector_.detect(frame))
-        {
-            std::cout << "Mouvement détecté !" << std::endl;
-        }
+		// Détection de mouvement
+		bool motion_detected =
+            motion_detector_.detect(frame, motion_mask);
 
-        cv::imshow("Cerno Verdict", frame);
+		// Envois de commande au STM32
+		if (motion_detected && !motion_active_)
+		{
+			process_command("MOTION");
+			motion_active_ = true;
+		}
+		else if (!motion_detected && motion_active_)
+		{
+			process_command("CLEAR");
+			motion_active_ = false;
+		}
 
-        int key = cv::waitKey(1);
+		// Affichage de fenetres
+        display_.show(frame, motion_mask);
 
-        if (key == 'q' || key == 27)
+        if (display_.should_close())
         {
             break;
         }
     }
 
-    cv::destroyAllWindows();
+    display_.close();
 }
 
 void Application::process_command(const std::string& command)
