@@ -3,6 +3,7 @@
 #include <string>
 
 #include "vision/motion_event.hpp"
+#include "application/storage/storage_config.hpp"
 
 class EventStorage
 {
@@ -12,5 +13,7 @@ public:
     bool save(const MotionEvent& event);
 
 private:
-    std::string base_path_;
+    StorageConfig config_;
+
+    void enforce_limit();
 };

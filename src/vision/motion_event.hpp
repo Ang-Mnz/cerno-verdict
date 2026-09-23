@@ -2,6 +2,7 @@
 
 #include <chrono>
 #include <string>
+#include <cstdint>
 
 #include <opencv2/opencv.hpp>
 
@@ -26,7 +27,11 @@ public:
 	bool save_image(const std::string& path) const;
 	std::string image_filename() const;
 
+	std::uint64_t id() const;
+
 private:
+	std::uint64_t id_;
+
     bool active_;
 
 	std::chrono::steady_clock::time_point start_time_;

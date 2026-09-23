@@ -7,7 +7,7 @@
 #include "vision/motion_detector.hpp"
 #include "vision/vision_display.hpp"
 #include "vision/motion_event.hpp"
-#include "application/events_storage.hpp"
+#include "application/storage/events_storage.hpp"
 
 class Application
 {

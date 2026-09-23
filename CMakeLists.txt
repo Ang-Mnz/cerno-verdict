@@ -11,15 +11,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(OpenCV REQUIRED)
 
 # Application principale
-set(SOURCES
-	src/main.cpp
-	src/communication/uart.cpp
-	src/application/application.cpp
-	src/application/events_storage.cpp
-	src/vision/camera.cpp
-	src/vision/motion_detector.cpp
-	src/vision/vision_display.cpp
-	src/vision/motion_event.cpp
+file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
 )
 
 add_executable(cerno_verdict

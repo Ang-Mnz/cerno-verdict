@@ -1,8 +1,19 @@
 #include "motion_event.hpp"
 
-MotionEvent::MotionEvent()
-    : active_(false)
+namespace
 {
+    std::uint64_t next_event_id = 1;
+}
+
+MotionEvent::MotionEvent()
+    : active_(false),
+	id_(next_event_id++)
+{
+}
+
+std::uint64_t MotionEvent::id() const
+{
+    return id_;
 }
 
 void MotionEvent::start(const cv::Mat& frame)
