@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "vision/motion_event.hpp"
+#include "application/motion_manager/motion_event.hpp"
 #include "application/storage/storage_config.hpp"
 
 class EventStorage

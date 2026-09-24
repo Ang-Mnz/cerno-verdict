@@ -30,21 +30,18 @@ void Application::run()
 		bool motion_detected =
             motion_detector_.detect(frame, motion_mask);
 
+		// Gestion de l'événement (Enregistrement d'image etc...)
+		MotionState motion_state =
+    		motion_manager_.process(frame, motion_detected);
+
+
 		// Envois de commande au STM32
-		if (motion_detected &&
-    		(motion_events_.empty() ||
-			!motion_events_.back().is_active()))
+		if (motion_state == MotionState::STARTED)
 		{
-			motion_events_.emplace_back();
-			motion_events_.back().start(frame);
 			process_command("MOTION");
 		}
-		else if (!motion_detected &&
-         		 !motion_events_.empty() &&
-         		 motion_events_.back().is_active())
+		else if (motion_state == MotionState::ENDED)
 		{
-			motion_events_.back().end();
-			storage_.save(motion_events_.back());
 			process_command("CLEAR");
 		}
 
@@ -53,17 +50,10 @@ void Application::run()
 
         if (display_.should_close())
         {
+			process_command("CLEAR");
             break;
         }
     }
-
-	// Plus de mouvment à la fin du programme
-	if (!motion_events_.empty() &&
-		motion_events_.back().is_active())
-	{
-		motion_events_.back().end();
-		process_command("CLEAR");
-	}
 
     display_.close();
 }
