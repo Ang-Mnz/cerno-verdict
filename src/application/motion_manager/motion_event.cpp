@@ -1,3 +1,7 @@
+#include <ctime>
+#include <iomanip>
+#include <sstream>
+
 #include "motion_event.hpp"
 
 namespace
@@ -85,9 +89,11 @@ std::string MotionEvent::image_filename() const
 
     std::ostringstream filename;
 
-    filename << "motion_"
-             << std::put_time(&local_time, "%Y-%m-%d_%H-%M-%S")
-             << ".jpg";
+filename << "motion_"
+         << std::put_time(&local_time, "%Y-%m-%d_%H-%M-%S")
+         << "_"
+         << id_
+         << ".jpg";
 
     return filename.str();
 }

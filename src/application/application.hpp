@@ -4,11 +4,12 @@
 
 #include "communication/uart.hpp"
 
-#include "vision/camera.hpp"
+#include "vision/camera/camera.hpp"
 #include "vision/motion_detector.hpp"
-#include "vision/vision_display.hpp"
+#include "display/vision_display.hpp"
 
 #include "application/motion_manager/motion_manager.hpp"
+#include "application/application_config.hpp"
 
 class Application
 {
@@ -18,6 +19,8 @@ public:
     void run();
 
 private:
+	ApplicationConfig config_;
+
     Uart uart_;
 	Camera camera_;
 	MotionDetector motion_detector_;

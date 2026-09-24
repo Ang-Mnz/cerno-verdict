@@ -7,7 +7,7 @@ VisionDisplay::VisionDisplay()
     cv::namedWindow("camera", cv::WINDOW_NORMAL);
     cv::namedWindow("Motion Mask", cv::WINDOW_NORMAL);
 
-    cv::resizeWindow("Cerno Verdict", width_, height_);
+    cv::resizeWindow("camera", width_, height_);
     cv::resizeWindow("Motion Mask", width_, height_);
 }
 

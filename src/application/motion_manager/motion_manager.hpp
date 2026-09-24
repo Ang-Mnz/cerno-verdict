@@ -23,6 +23,8 @@ public:
 
     MotionState process(const cv::Mat& frame, bool motion_detected);
 
+	void stop();
+
 private:
     std::optional<MotionEvent> motion_event_;
     EventStorage storage_;

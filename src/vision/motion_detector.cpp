@@ -17,7 +17,10 @@ bool MotionDetector::detect(const cv::Mat& frame, cv::Mat& motion_mask)
     cv::GaussianBlur(
         gray_frame,
         blurred_frame,
-        cv::Size(21, 21),
+        cv::Size(
+			config_.blur_kernel_size,
+			config_.blur_kernel_size
+		),
         0
     );
 

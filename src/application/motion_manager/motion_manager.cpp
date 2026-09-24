@@ -19,6 +19,14 @@ void MotionManager::end_event()
     motion_event_.reset();
 }
 
+void MotionManager::stop()
+{
+    if (motion_event_)
+    {
+        end_event();
+    }
+}
+
 MotionState MotionManager::process(
     const cv::Mat& frame,
     bool motion_detected)

@@ -3,7 +3,7 @@
 #include "application.hpp"
 
 Application::Application()
-    : uart_("/dev/ttyACM0", 115200)
+    : uart_(config_.uart_device, config_.uart_baudrate)
 {
 }
 
@@ -23,6 +23,10 @@ void Application::run()
         if (!camera_.read(frame))
         {
             std::cerr << "Impossible de lire une image\n";
+
+			motion_manager_.stop();
+			process_command("CLEAR");
+
             break;
         }
 
@@ -50,6 +54,7 @@ void Application::run()
 
         if (display_.should_close())
         {
+			motion_manager_.stop();
 			process_command("CLEAR");
             break;
         }
