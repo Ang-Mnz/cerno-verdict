@@ -12,16 +12,16 @@ find_package(OpenCV REQUIRED)
 
 # Application principale
 file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/praetorium/*.cpp"
 )
 
 add_executable(cerno_verdict
-	${SOURCES}
+    ${SOURCES}
 )
 
 target_include_directories(cerno_verdict
-	PRIVATE
-		src
+    PRIVATE
+        praetorium
 )
 
 target_link_libraries(cerno_verdict

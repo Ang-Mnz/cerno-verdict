@@ -1,17 +1,60 @@
 # Cerno Verdict
 
-Projet personnel de développement d'un système de vision embarquée combinant informatique embarquée, programmation C/C++, Linux, architectures ARM et traitement d'image.
+Cerno Verdict a pour objectif de devenir un système de surveillance et de vision embarquée autonome, distribué entre un microcontrôleur et une plateforme Linux.
 
-L'objectif est de concevoir progressivement un système capable d'acquérir des images depuis une caméra, de les analyser localement et de prendre une décision en fonction du résultat de l'analyse.
+Le système final sera organisé autour de plusieurs modules :
 
-Le système final devra être capable de :
+Vigile — un microcontrôleurs STM32 chargé de surveiller l'environnement à l'aide de capteurs de mouvement et de communiquer les événements au système principal par liaison wi-fi.
+Praetorium — une plateforme Linux embarquée basée sur un Raspberry Pi, chargée de piloter la caméra, d'effectuer le traitement d'image en C++/OpenCV et de produire un verdict à partir des événements détectés.
+Senatus — un backend Java/Spring Boot chargé de centraliser les événements, gérer leur stockage, exposer une API REST et assurer la communication avec l'interface utilisateur.
+Forum — une interface web développée en Vue.js/TypeScript permettant de consulter les événements, visualiser les informations du système et interagir avec celui-ci.
 
-- acquérir une image ou un flux vidéo depuis une caméra
-- effectuer un traitement d'image localement
-- détecter ou analyser un objet présent dans la scène
-- déterminer un état ou une décision à partir de cette analyse
-- communiquer cette décision avec un microcontrôleur
-- permettre au microcontrôleur de commander des périphériques ou des actionneurs
+À terme, le fonctionnement général sera le suivant :
+```text
+                         Cerno Verdict
+
+ ┌──────────────────┐
+ │     Vigiles      │
+ │                  │
+ │ STM32            │
+ │ Wi-Fi            │
+ └────────┬─────────┘
+          │
+          │ Alerte mouvement
+          ▼
+ ┌──────────────────┐
+ │    Praetorium    │
+ │                  │
+ │ Raspberry Pi     │
+ │ C++ / OpenCV     │
+ │ Caméra           │
+ │ Détection        │
+ └────────┬─────────┘
+          │
+          │ Verdict / événement
+          ▼
+ ┌──────────────────┐
+ │     Senatus      │
+ │                  │
+ │ Spring Boot      │
+ │ REST             │
+ │ SQLite           │
+ └────────┬─────────┘
+          │
+          │ Données
+          ▼
+ ┌──────────────────┐
+ │      Forum       │
+ │                  │
+ │ Vue.js /         │
+ │ TypeScript       │
+ └──────────────────┘
+
+```
+
+L'objectif n'est pas uniquement de réaliser un système de détection de mouvement, mais de construire progressivement une architecture complète mêlant systèmes embarqués, programmation bas niveau, C++ moderne, Linux, vision par ordinateur, communication inter-processus, backend, base de données et développement web.
+
+Le projet sera développé progressivement, chaque module étant introduit et intégré au fur et à mesure de l'avancement.
 
 ## État actuel
 
