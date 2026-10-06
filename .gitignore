@@ -22,5 +22,8 @@ firmware/stm32/.metadata/
 # Images events
 events/
 
+# Variables d'environnement
+.env
+
 # Autre
 infos_projet.txt

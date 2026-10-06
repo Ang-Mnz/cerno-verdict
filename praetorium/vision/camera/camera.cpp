@@ -12,9 +12,9 @@ Camera::~Camera()
     }
 }
 
-bool Camera::open()
+bool Camera::open(const std::string& source)
 {
-    return capture_.open(0);
+    return capture_.open(source);
 }
 
 bool Camera::read(cv::Mat& frame)

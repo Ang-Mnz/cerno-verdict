@@ -3,13 +3,14 @@
 #include "application.hpp"
 
 Application::Application()
-    : uart_(config_.uart_device, config_.uart_baudrate)
+    : config_(loadApplicationConfig()),
+      uart_(config_.uart_device, config_.uart_baudrate)
 {
 }
 
 void Application::run()
 {
-    if (!camera_.open())
+    if (!camera_.open(config_.camera_url))
     {
         std::cerr << "Impossible d'ouvrir la caméra\n";
         return;
