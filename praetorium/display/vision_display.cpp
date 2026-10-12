@@ -36,7 +36,7 @@ bool VisionDisplay::should_close() const
 {
 	if (!enabled_)
     {
-        return;
+        return false;
     }
 
     int key = cv::waitKey(1);
