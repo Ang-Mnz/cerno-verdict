@@ -46,11 +46,17 @@ target_link_libraries(event_storage_test
 
 # CTests
 
+# Hardware
 add_test(
     NAME uart_test
     COMMAND uart_test
 )
 
+set_tests_properties(uart_test PROPERTIES
+    LABELS "hardware"
+)
+
+# Software
 add_test(
     NAME motion_manager_test
     COMMAND motion_manager_test
@@ -59,4 +65,11 @@ add_test(
 add_test(
     NAME event_storage_test
     COMMAND event_storage_test
+)
+
+set_tests_properties(
+    motion_manager_test
+    event_storage_test
+    PROPERTIES
+        LABELS "software"
 )
