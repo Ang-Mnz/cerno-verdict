@@ -43,7 +43,7 @@ jobs:
       - name: Install dependencies
         run: |
           apt-get update
-          apt-get install -y cmake g++ libopencv-dev
+          apt-get install -y cmake g++ libopencv-dev file git
 
       - name: Checkout repository
         uses: actions/checkout@v4
