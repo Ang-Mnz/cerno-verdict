@@ -1,5 +1,6 @@
 #include <cassert>
 #include <filesystem>
+#include <iostream>
 
 #include <opencv2/opencv.hpp>
 
@@ -8,40 +9,46 @@
 
 int main()
 {
-    EventStorage storage;
+	StorageConfig config;
+	config.path_events =
+	(std::filesystem::temp_directory_path() / "cerno_verdict_test_events").string();
 
-    cv::Mat frame =
-        cv::Mat::zeros(480, 640, CV_8UC3);
+	std::filesystem::remove_all(config.path_events);
 
-    MotionEvent event;
+	EventStorage storage(config);
 
-    event.start(frame);
-    event.end();
+	cv::Mat frame =
+		cv::Mat::zeros(480, 640, CV_8UC3);
 
-    bool saved =
-        storage.save(event);
+	MotionEvent event;
 
-    assert(saved);
+	event.start(frame);
+	event.end();
 
-    std::filesystem::path events_directory =
-        "../events/";
+	bool saved =
+		storage.save(event);
 
-    assert(std::filesystem::exists(events_directory));
+	assert(saved);
 
-    bool image_found = false;
+	bool image_found = false;
 
-    for (const auto& entry :
-         std::filesystem::recursive_directory_iterator(events_directory))
-    {
-        if (entry.is_regular_file() &&
-            entry.path().extension() == ".jpg")
-        {
-            image_found = true;
-            break;
-        }
-    }
+	for (const auto& entry :
+		std::filesystem::recursive_directory_iterator(config.path_events))
+	{
+		if (entry.is_regular_file() &&
+			entry.path().extension() == ".jpg")
+		{
+			image_found = true;
+			break;
+		}
+	}
 
-    assert(image_found);
+	assert(image_found);
 
-    return 0;
+	std::filesystem::remove_all(config.path_events);
+
+	std::cout << "EventStorage tests passed." << std::endl;
+
+	return 0;
+
 }

@@ -8,7 +8,7 @@
 class EventStorage
 {
 public:
-    EventStorage();
+    explicit EventStorage(const StorageConfig& config = {});
 
     bool save(const MotionEvent& event);
 

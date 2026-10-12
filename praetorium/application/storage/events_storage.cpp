@@ -9,7 +9,8 @@
 
 #include "events_storage.hpp"
 
-EventStorage::EventStorage()
+EventStorage::EventStorage(const StorageConfig& config)
+    : config_(config)
 {
 }
 
