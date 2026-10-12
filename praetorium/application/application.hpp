@@ -14,7 +14,7 @@
 class Application
 {
 public:
-    Application();
+    Application(bool headless = false);
 
     void run();
 

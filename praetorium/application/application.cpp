@@ -2,9 +2,10 @@
 
 #include "application.hpp"
 
-Application::Application()
+Application::Application(bool headless)
     : config_(loadApplicationConfig()),
-      uart_(config_.uart_device, config_.uart_baudrate)
+      uart_(config_.uart_device, config_.uart_baudrate),
+	  display_(!headless)
 {
 }
 

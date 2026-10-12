@@ -1,9 +1,16 @@
 #include "vision_display.hpp"
 
-VisionDisplay::VisionDisplay()
+VisionDisplay::VisionDisplay(bool enabled)
     : width_(800),
-      height_(600)
+      height_(600),
+	  enabled_(enabled)
 {
+
+	if (!enabled_)
+    {
+        return;
+    }
+
     cv::namedWindow("camera", cv::WINDOW_NORMAL);
     cv::namedWindow("Motion Mask", cv::WINDOW_NORMAL);
 
@@ -15,12 +22,23 @@ void VisionDisplay::show(
     const cv::Mat& frame,
     const cv::Mat& motion_mask)
 {
+
+	if (!enabled_)
+    {
+        return;
+    }
+
     cv::imshow("camera", frame);
     cv::imshow("Motion Mask", motion_mask);
 }
 
 bool VisionDisplay::should_close() const
 {
+	if (!enabled_)
+    {
+        return;
+    }
+
     int key = cv::waitKey(1);
 
     return key == 'q' || key == 27;
@@ -28,5 +46,10 @@ bool VisionDisplay::should_close() const
 
 void VisionDisplay::close()
 {
+	if (!enabled_)
+    {
+        return;
+    }
+
     cv::destroyAllWindows();
 }

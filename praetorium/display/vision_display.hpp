@@ -5,7 +5,7 @@
 class VisionDisplay
 {
 public:
-    VisionDisplay();
+    VisionDisplay(bool enabled);
 
     void show(const cv::Mat& frame, const cv::Mat& motion_mask);
     bool should_close() const;
@@ -14,4 +14,5 @@ public:
 private:
     int width_;
     int height_;
+    bool enabled_;
 };
