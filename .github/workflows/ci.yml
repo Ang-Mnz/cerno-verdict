@@ -65,3 +65,30 @@ jobs:
           name: cerno-verdict-arm64
           path: build/cerno_verdict
           if-no-files-found: error
+
+  release-arm64:
+    name: Publish Raspberry Pi release
+    needs:
+      - build-and-test
+      - build-arm64
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download ARM64 binary
+        uses: actions/download-artifact@v4
+        with:
+          name: cerno-verdict-arm64
+          path: dist
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v0.1.${{ github.run_number }}
+          name: Cerno Verdict v0.1.${{ github.run_number }}
+          target_commitish: ${{ github.sha }}
+          generate_release_notes: true
+          files: dist/cerno_verdict
