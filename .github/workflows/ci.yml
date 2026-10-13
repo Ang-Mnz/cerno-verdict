@@ -115,6 +115,35 @@ jobs:
           name: cerno-verdict-arm64
           path: dist
 
+      - name: Check OIDC subject
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import os
+          import json
+          import base64
+          import urllib.request
+
+          url = os.environ["ACTIONS_ID_TOKEN_REQUEST_URL"] + "&audience=debug-cerno-verdict"
+          token = os.environ["ACTIONS_ID_TOKEN_REQUEST_TOKEN"]
+
+          request = urllib.request.Request(
+              url,
+              headers={"Authorization": f"Bearer {token}"}
+          )
+
+          with urllib.request.urlopen(request) as response:
+              jwt = json.load(response)["value"]
+
+          payload = jwt.split(".")[1]
+          payload += "=" * (-len(payload) % 4)
+
+          claims = json.loads(base64.urlsafe_b64decode(payload))
+
+          print("Issuer:", claims.get("iss"))
+          print("Subject:", claims.get("sub"))
+          PY
+
       - name: Connect to Tailscale
         uses: tailscale/github-action@v4
         with:
