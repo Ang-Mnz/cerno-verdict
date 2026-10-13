@@ -92,3 +92,57 @@ jobs:
           target_commitish: ${{ github.sha }}
           generate_release_notes: true
           files: dist/cerno_verdict
+
+  deploy:
+    name: Deploy to Raspberry Pi
+    needs:
+      - build-and-test
+      - build-arm64
+      - release-arm64
+
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Download ARM64 binary
+        uses: actions/download-artifact@v4
+        with:
+          name: cerno-verdict-arm64
+          path: dist
+
+      - name: Connect to Tailscale
+        uses: tailscale/github-action@v4
+        with:
+          oauth-client-id: ${{ secrets.TS_OIDC_CLIENT_ID }}
+          audience: ${{ secrets.TS_OIDC_AUDIENCE }}
+          tags: tag:github-actions
+          ping: 100.119.172.2
+
+      - name: Configure SSH
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/cerno_deploy
+          chmod 600 ~/.ssh/cerno_deploy
+          ssh-keyscan -H 100.119.172.2 >> ~/.ssh/known_hosts
+
+      - name: Transfer executable to Raspberry Pi
+        run: |
+          scp -i ~/.ssh/cerno_deploy \
+            -o IdentitiesOnly=yes \
+            dist/cerno_verdict \
+            cerno-deploy@100.119.172.2:/home/cerno-deploy/incoming/cerno_verdict.new
+
+      - name: Install and restart application
+        run: |
+          ssh -i ~/.ssh/cerno_deploy \
+            -o IdentitiesOnly=yes \
+            cerno-deploy@100.119.172.2 \
+            'sudo -n /usr/local/sbin/deploy-cerno-verdict'
