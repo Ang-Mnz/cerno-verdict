@@ -27,6 +27,5 @@ private:
 	VisionDisplay display_;
 	MotionManager motion_manager_;
 
-
     void process_command(const std::string& command);
 };

@@ -1,6 +1,9 @@
 #include <iostream>
+#include <csignal>
 
 #include "application.hpp"
+
+extern volatile std::sig_atomic_t stop_requested;
 
 Application::Application(bool headless)
     : config_(loadApplicationConfig()),
@@ -20,7 +23,7 @@ void Application::run()
     cv::Mat frame;
 	cv::Mat motion_mask;
 
-    while (true)
+    while (!stop_requested)
     {
         if (!camera_.read(frame))
         {
@@ -62,6 +65,8 @@ void Application::run()
         }
     }
 
+	motion_manager_.stop();
+	process_command("CLEAR");
     display_.close();
 }
 
