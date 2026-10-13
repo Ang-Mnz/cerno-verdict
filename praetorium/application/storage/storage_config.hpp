@@ -5,6 +5,6 @@
 
 struct StorageConfig
 {
-    std::string path_events = "../events/";
+	std::string path_events = "events/";
     std::size_t max_images = 100;
 };
