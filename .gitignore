@@ -8,8 +8,15 @@ cmake_install.cmake
 Makefile
 compile_commands.json
 
+# PlatformIO
+vigile/esp32/.pio/
+
 # VS Code
 .vscode/
+vigile/esp32/.vscode/.browse.c_cpp.db*
+vigile/esp32/.vscode/c_cpp_properties.json
+vigile/esp32/.vscode/launch.json
+vigile/esp32/.vscode/ipch/
 
 # STM32CubeIDE
 firmware/stm32/Debug/
