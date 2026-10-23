@@ -33,7 +33,7 @@ events/
 .env
 
 # Vigile
-/vigile/esp32/include/wifi_secrets.h
+/vigile/esp32/include/config/wifi_secrets.h
 
 # Autre
 infos_projet.txt

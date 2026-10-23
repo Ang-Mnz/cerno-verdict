@@ -2,8 +2,9 @@
 
 #include "driver/gpio.h"
 #include "esp_err.h"
-#include "uart.h"
 #include "esp_log.h"
+
+#include "communication.h"
 
 #define LED_GPIO GPIO_NUM_2
 #define COMMAND_SIZE 16
@@ -12,7 +13,7 @@ void app_main(void)
 {
     ESP_LOGI("CERNO", "Demarrage de l'application");
 
-    uart_init();
+    communication_init();
 
     const gpio_config_t gpio_config_data = {
         .pin_bit_mask = 1ULL << LED_GPIO,
@@ -29,7 +30,7 @@ void app_main(void)
 
     while (1)
     {
-        uart_receive_string(command, sizeof(command));
+        communication_receive_string(command, sizeof(command));
 
         if (strcmp(command, "MOTION") == 0)
         {
