@@ -32,5 +32,8 @@ events/
 # Variables d'environnement
 .env
 
+# Vigile
+/vigile/esp32/include/wifi_secrets.h
+
 # Autre
 infos_projet.txt
