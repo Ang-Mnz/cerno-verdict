@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "communication/uart.hpp"
+#include "communication/communication.hpp"
 
 #include "vision/camera/camera.hpp"
 #include "vision/motion_detector.hpp"
@@ -21,7 +21,7 @@ public:
 private:
 	ApplicationConfig config_;
 
-    Uart uart_;
+    Communication communication_;
 	Camera camera_;
 	MotionDetector motion_detector_;
 	VisionDisplay display_;

@@ -7,7 +7,7 @@ extern volatile std::sig_atomic_t stop_requested;
 
 Application::Application(bool headless)
     : config_(loadApplicationConfig()),
-      uart_(config_.uart_device, config_.uart_baudrate),
+      communication_(config_),
 	  display_(!headless)
 {
 }
@@ -74,11 +74,11 @@ void Application::process_command(const std::string& command)
 {
     if (command == "MOTION")
     {
-        uart_.send("MOTION\n");
+        communication_.send("MOTION\n");
     }
     else if (command == "CLEAR")
     {
-        uart_.send("CLEAR\n");
+        communication_.send("CLEAR\n");
     }
     else
     {
