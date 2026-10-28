@@ -13,16 +13,24 @@ permissions:
 jobs:
   build-and-test:
     name: Build and test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Cache APT packages
+        uses: actions/cache@v4
+        with:
+          path: /var/cache/apt/archives
+          key: apt-ubuntu-24.04-opencv-v1
+          restore-keys: |
+            apt-ubuntu-24.04-
+
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y cmake g++ libopencv-dev
+          sudo apt-get -o APT::Keep-Downloaded-Packages=true install -y cmake g++ libopencv-dev
 
       - name: Configure CMake
         run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug
