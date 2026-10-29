@@ -5,7 +5,6 @@
 
 #include "freertos/FreeRTOS.h"
 
-#include "esp_err.h"
 #include "esp_log.h"
 
 #include "lwip/inet.h"
@@ -148,4 +147,51 @@ void vigile_tcp_receive_string(char *buffer, size_t size)
 
         return;
     }
+}
+
+esp_err_t vigile_tcp_send_string(const char *message)
+{
+    if (message == NULL)
+    {
+        return ESP_ERR_INVALID_ARG;
+    }
+
+    if (client_fd < 0)
+    {
+        ESP_LOGE(TAG, "Impossible d'envoyer : aucun client TCP connecte");
+        return ESP_FAIL;
+    }
+
+    size_t size = strlen(message);
+    size_t sent = 0;
+
+    while (sent < size)
+    {
+        int result = send(
+            client_fd,
+            message + sent,
+            size - sent,
+            0
+        );
+
+        if (result <= 0)
+        {
+            ESP_LOGE(TAG, "Echec de send : errno=%d", errno);
+            return ESP_FAIL;
+        }
+
+        sent += result;
+    }
+
+    const char newline = '\n';
+
+    if (send(client_fd, &newline, 1, 0) != 1)
+    {
+        ESP_LOGE(TAG, "Echec de l'envoi du retour a la ligne");
+        return ESP_FAIL;
+    }
+
+    ESP_LOGI(TAG, "Message TCP envoye : %s", message);
+
+    return ESP_OK;
 }

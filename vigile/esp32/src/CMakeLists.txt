@@ -5,6 +5,8 @@ idf_component_register(
         "communication.c"
         "wifi.c"
         "tcp.c"
+        "pir.c"
+        "status_led.c"
     INCLUDE_DIRS "../include"
     REQUIRES
         driver

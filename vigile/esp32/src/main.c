@@ -1,30 +1,24 @@
 #include <string.h>
 
-#include "driver/gpio.h"
 #include "esp_err.h"
 #include "esp_log.h"
 
 #include "communication.h"
+#include "pir.h"
+#include "status_led.h"
 
-#define LED_GPIO GPIO_NUM_2
 #define COMMAND_SIZE 16
+
+static const char *TAG = "CERNO";
 
 void app_main(void)
 {
-    ESP_LOGI("CERNO", "Demarrage de l'application");
+    ESP_LOGI(TAG, "Demarrage de l'application");
+
+    ESP_ERROR_CHECK(status_led_init());
+    ESP_ERROR_CHECK(pir_init());
 
     communication_init();
-
-    const gpio_config_t gpio_config_data = {
-        .pin_bit_mask = 1ULL << LED_GPIO,
-        .mode = GPIO_MODE_OUTPUT,
-        .pull_up_en = GPIO_PULLUP_DISABLE,
-        .pull_down_en = GPIO_PULLDOWN_DISABLE,
-        .intr_type = GPIO_INTR_DISABLE,
-    };
-
-    ESP_ERROR_CHECK(gpio_config(&gpio_config_data));
-    ESP_ERROR_CHECK(gpio_set_level(LED_GPIO, 0));
 
     char command[COMMAND_SIZE];
 
@@ -34,17 +28,17 @@ void app_main(void)
 
         if (strcmp(command, "MOTION") == 0)
         {
-            gpio_set_level(LED_GPIO, 1);
-            ESP_LOGI("CERNO", "Mouvement detecte");
+            ESP_ERROR_CHECK(status_led_on());
+            ESP_LOGI(TAG, "Mouvement detecte");
         }
         else if (strcmp(command, "CLEAR") == 0)
         {
-            gpio_set_level(LED_GPIO, 0);
-            ESP_LOGI("CERNO", "Fin du mouvement");
+            ESP_ERROR_CHECK(status_led_off());
+            ESP_LOGI(TAG, "Fin du mouvement");
         }
         else
         {
-            ESP_LOGW("CERNO", "Commande inconnue");
+            ESP_LOGW(TAG, "Commande inconnue");
         }
     }
 }
