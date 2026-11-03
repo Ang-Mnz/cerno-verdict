@@ -32,9 +32,9 @@ void VisionDisplay::show(
     cv::imshow("Motion Mask", motion_mask);
 }
 
-bool VisionDisplay::should_close() const
+bool VisionDisplay::process_events() const
 {
-	if (!enabled_)
+    if (!enabled_)
     {
         return false;
     }

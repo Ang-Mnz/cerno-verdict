@@ -21,3 +21,11 @@ bool Camera::read(cv::Mat& frame)
 {
     return capture_.read(frame);
 }
+
+void Camera::close()
+{
+    if (capture_.isOpened())
+    {
+        capture_.release();
+    }
+}

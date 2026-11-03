@@ -19,6 +19,9 @@ public:
     void run();
 
 private:
+
+	bool active_ = false;
+
 	ApplicationConfig config_;
 
     Communication communication_;
@@ -27,5 +30,7 @@ private:
 	VisionDisplay display_;
 	MotionManager motion_manager_;
 
-    void process_command(const std::string& command);
+	std::string receive_buffer_;
+    void process_send_command(const std::string& command);
+	void process_received_command(const std::string& command);
 };

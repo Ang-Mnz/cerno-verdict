@@ -8,7 +8,7 @@ public:
     VisionDisplay(bool enabled);
 
     void show(const cv::Mat& frame, const cv::Mat& motion_mask);
-    bool should_close() const;
+	bool process_events() const;
     void close();
 
 private:

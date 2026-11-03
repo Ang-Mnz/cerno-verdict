@@ -11,6 +11,7 @@ public:
 
     bool open(const std::string& source);
     bool read(cv::Mat& frame);
+	void close();
 
 private:
     cv::VideoCapture capture_;

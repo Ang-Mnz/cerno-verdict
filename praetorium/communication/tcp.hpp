@@ -3,6 +3,14 @@
 #include <cstdint>
 #include <string>
 
+enum class TcpReceiveStatus
+{
+    DATA,
+    NO_DATA_AVAILABLE,
+    DISCONNECTED,
+    ERROR
+};
+
 class Tcp
 {
 public:
@@ -11,6 +19,7 @@ public:
 
     bool connect();
     bool send(const std::string& data);
+	TcpReceiveStatus receive(std::string& data);
 
 private:
     std::string host_;

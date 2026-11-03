@@ -1,5 +1,7 @@
 #include <iostream>
 #include <csignal>
+#include <chrono>
+#include <thread>
 
 #include "application.hpp"
 
@@ -14,63 +16,103 @@ Application::Application(bool headless)
 
 void Application::run()
 {
-    if (!camera_.open(config_.camera_url))
-    {
-        std::cerr << "Impossible d'ouvrir la caméra\n";
-        return;
-    }
-
     cv::Mat frame;
-	cv::Mat motion_mask;
+    cv::Mat motion_mask;
 
     while (!stop_requested)
     {
+        // Réception des commandes TCP
+        std::string received_data;
+
+        TcpReceiveStatus status =
+            communication_.receive(received_data);
+
+        if (status == TcpReceiveStatus::DATA)
+        {
+            receive_buffer_ += received_data;
+
+            std::size_t position;
+
+			// Recherche de la fin de la commande
+            while ((position = receive_buffer_.find('\n')) != std::string::npos)
+            {
+                std::string command = receive_buffer_.substr(0, position);
+                receive_buffer_.erase(0, position + 1);
+
+                process_received_command(command);
+            }
+        }
+        else if (status == TcpReceiveStatus::DISCONNECTED ||
+                 status == TcpReceiveStatus::ERROR)
+        {
+            std::cerr << "Connexion avec Vigile perdue\n";
+            break;
+        }
+
+		// Tant que la camera n'est pas active on ignore la partie traitement vidéo
+        if (!active_)
+        {
+			if (display_.process_events())
+			{
+				break;
+			}
+
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            continue;
+        }
+
         if (!camera_.read(frame))
         {
             std::cerr << "Impossible de lire une image\n";
 
-			motion_manager_.stop();
-			process_command("CLEAR");
+            motion_manager_.stop();
+            process_send_command("CLEAR");
 
-            break;
+            camera_.close();
+            active_ = false;
+
+            continue;
         }
 
-		// Détection de mouvement
-		bool motion_detected =
+        // Détection de mouvement
+        bool motion_detected =
             motion_detector_.detect(frame, motion_mask);
 
-		// Gestion de l'événement (Enregistrement d'image etc...)
-		MotionState motion_state =
-    		motion_manager_.process(frame, motion_detected);
+        // Gestion de l'événement (Enregistrement d'image etc...)
+        MotionState motion_state =
+            motion_manager_.process(frame, motion_detected);
 
+        // Envois de commande au STM32
+        if (motion_state == MotionState::STARTED)
+        {
+            process_send_command("MOTION");
+        }
+        else if (motion_state == MotionState::ENDED)
+        {
+            process_send_command("CLEAR");
+        }
 
-		// Envois de commande au STM32
-		if (motion_state == MotionState::STARTED)
-		{
-			process_command("MOTION");
-		}
-		else if (motion_state == MotionState::ENDED)
-		{
-			process_command("CLEAR");
-		}
-
-		// Affichage de fenetres
+        // Affichage de fenetres
         display_.show(frame, motion_mask);
 
-        if (display_.should_close())
+        if (display_.process_events())
         {
-			motion_manager_.stop();
-			process_command("CLEAR");
-            break;
+            motion_manager_.stop();
+            process_send_command("CLEAR");
+
+            camera_.close();
+            active_ = false;
         }
     }
 
-	motion_manager_.stop();
-	process_command("CLEAR");
+    motion_manager_.stop();
+    process_send_command("CLEAR");
+
+    camera_.close();
     display_.close();
 }
 
-void Application::process_command(const std::string& command)
+void Application::process_send_command(const std::string& command)
 {
     if (command == "MOTION")
     {
@@ -83,5 +125,22 @@ void Application::process_command(const std::string& command)
     else
     {
         std::cout << "Commande inconnue\n";
+    }
+}
+
+void Application::process_received_command(const std::string& command)
+{
+    if (command == "ACTIVATE" && !active_)
+    {
+        std::cout << "Activation de la surveillance\n";
+
+        if (camera_.open(config_.camera_url))
+        {
+            active_ = true;
+        }
+        else
+        {
+            std::cerr << "Impossible d'ouvrir la caméra\n";
+        }
     }
 }

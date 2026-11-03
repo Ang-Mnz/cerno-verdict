@@ -47,3 +47,13 @@ bool Communication::send(const std::string& data)
 
     return false;
 }
+
+TcpReceiveStatus Communication::receive(std::string& data)
+{
+    if (tcp_)
+    {
+        return tcp_->receive(data);
+    }
+
+    return TcpReceiveStatus::ERROR;
+}

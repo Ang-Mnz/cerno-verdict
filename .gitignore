@@ -32,6 +32,9 @@ events/
 # Variables d'environnement
 .env
 
+# Camera control python venv
+.venv
+
 # Vigile
 /vigile/esp32/include/config/wifi_secrets.h
 

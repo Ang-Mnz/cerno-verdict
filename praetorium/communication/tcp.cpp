@@ -104,3 +104,38 @@ bool Tcp::send(const std::string& data)
 
     return true;
 }
+
+TcpReceiveStatus Tcp::receive(std::string& data)
+{
+    if (socket_ < 0)
+    {
+        return TcpReceiveStatus::ERROR;
+    }
+
+    char buffer[256];
+
+    const ssize_t received = ::recv(
+        socket_,
+        buffer,
+        sizeof(buffer),
+        MSG_DONTWAIT
+    );
+
+    if (received > 0)
+    {
+        data.assign(buffer, static_cast<std::size_t>(received));
+        return TcpReceiveStatus::DATA;
+    }
+
+    if (received == 0)
+    {
+        return TcpReceiveStatus::DISCONNECTED;
+    }
+
+    if (errno == EAGAIN || errno == EWOULDBLOCK)
+    {
+        return TcpReceiveStatus::NO_DATA_AVAILABLE;
+    }
+
+    return TcpReceiveStatus::ERROR;
+}

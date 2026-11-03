@@ -13,6 +13,7 @@ public:
     explicit Communication(const ApplicationConfig& config);
 
     bool send(const std::string& data);
+	TcpReceiveStatus receive(std::string& data);
 
 private:
     std::unique_ptr<Uart> uart_;
