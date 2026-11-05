@@ -4,8 +4,8 @@
 #include <string>
 
 #include "application/application_config.hpp"
-#include "communication/uart.hpp"
-#include "communication/tcp.hpp"
+#include "communication_vigile/uart.hpp"
+#include "communication_vigile/tcp.hpp"
 
 class Communication
 {

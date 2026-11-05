@@ -71,6 +71,14 @@ ApplicationConfig loadApplicationConfig()
 		{
 			config.tcp_port = std::stoul(value);
 		}
+		else if (key == "CERNO_PYTHON_PATH")
+		{
+			config.python_path = value;
+		}
+		else if (key == "CERNO_CAMERA_CONTROLLER_PATH")
+		{
+			config.camera_controller_path = value;
+		}
     }
 
     if (config.camera_url.empty())
@@ -79,6 +87,20 @@ ApplicationConfig loadApplicationConfig()
             "CERNO_CAMERA_URL n'est pas définie dans .env"
         );
     }
+
+	if (config.python_path.empty())
+	{
+		throw std::runtime_error(
+			"CERNO_PYTHON_PATH n'est pas défini dans .env"
+		);
+	}
+
+	if (config.camera_controller_path.empty())
+	{
+		throw std::runtime_error(
+			"CERNO_CAMERA_CONTROLLER_PATH n'est pas défini dans .env"
+		);
+	}
 
     return config;
 }

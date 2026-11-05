@@ -9,13 +9,21 @@ extern volatile std::sig_atomic_t stop_requested;
 
 Application::Application(bool headless)
     : config_(loadApplicationConfig()),
-      communication_(config_),
-	  display_(!headless)
+		camera_controller_(
+          config_.python_path,
+          config_.camera_controller_path
+      	),
+		communication_(config_),
+	  	display_(!headless)
 {
 }
 
 void Application::run()
 {
+	// Au démarrage, la caméra reste en mode confidentialité
+	camera_controller_.start();
+    camera_controller_.set_privacy_mode(true);
+
     cv::Mat frame;
     cv::Mat motion_mask;
 
@@ -61,14 +69,17 @@ void Application::run()
             continue;
         }
 
-        if (!camera_.read(frame))
+        if (!camera_stream_.read(frame))
         {
             std::cerr << "Impossible de lire une image\n";
 
             motion_manager_.stop();
             process_send_command("CLEAR");
 
-            camera_.close();
+			camera_controller_.set_privacy_mode(true);
+
+            camera_stream_.close();
+
             active_ = false;
 
             continue;
@@ -100,7 +111,8 @@ void Application::run()
             motion_manager_.stop();
             process_send_command("CLEAR");
 
-            camera_.close();
+            camera_stream_.close();
+			camera_controller_.set_privacy_mode(true);
             active_ = false;
         }
     }
@@ -108,7 +120,11 @@ void Application::run()
     motion_manager_.stop();
     process_send_command("CLEAR");
 
-    camera_.close();
+    camera_stream_.close();
+
+	camera_controller_.set_privacy_mode(true);
+	camera_controller_.stop();
+
     display_.close();
 }
 
@@ -134,13 +150,21 @@ void Application::process_received_command(const std::string& command)
     {
         std::cout << "Activation de la surveillance\n";
 
-        if (camera_.open(config_.camera_url))
+        if (!camera_controller_.set_privacy_mode(false))
+        {
+            std::cerr << "Impossible de désactiver le mode confidentialité\n";
+            return;
+        }
+
+        if (camera_stream_.open(config_.camera_url))
         {
             active_ = true;
         }
         else
         {
             std::cerr << "Impossible d'ouvrir la caméra\n";
+
+            camera_controller_.set_privacy_mode(true);
         }
     }
 }

@@ -2,13 +2,14 @@
 
 #include <string>
 
-#include "communication/communication.hpp"
+#include "communication_vigile/communication.hpp"
 
-#include "vision/camera/camera.hpp"
+#include "vision/camera_stream/camera_stream.hpp"
 #include "vision/motion_detector.hpp"
 #include "display/vision_display.hpp"
 
 #include "application/motion_manager/motion_manager.hpp"
+#include "application/camera_controller.hpp"
 #include "application/application_config.hpp"
 
 class Application
@@ -24,8 +25,10 @@ private:
 
 	ApplicationConfig config_;
 
+	CameraController camera_controller_;
+
     Communication communication_;
-	Camera camera_;
+	CameraStream camera_stream_;
 	MotionDetector motion_detector_;
 	VisionDisplay display_;
 	MotionManager motion_manager_;

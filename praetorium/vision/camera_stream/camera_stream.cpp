@@ -1,10 +1,10 @@
-#include "vision/camera/camera.hpp"
+#include "vision/camera_stream/camera_stream.hpp"
 
-Camera::Camera()
+CameraStream::CameraStream()
 {
 }
 
-Camera::~Camera()
+CameraStream::~CameraStream()
 {
     if (capture_.isOpened())
     {
@@ -12,17 +12,17 @@ Camera::~Camera()
     }
 }
 
-bool Camera::open(const std::string& source)
+bool CameraStream::open(const std::string& source)
 {
     return capture_.open(source);
 }
 
-bool Camera::read(cv::Mat& frame)
+bool CameraStream::read(cv::Mat& frame)
 {
     return capture_.read(frame);
 }
 
-void Camera::close()
+void CameraStream::close()
 {
     if (capture_.isOpened())
     {

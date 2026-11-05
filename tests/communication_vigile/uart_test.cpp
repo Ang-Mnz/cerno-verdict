@@ -1,7 +1,7 @@
 #include <cassert>
 #include <iostream>
 
-#include "communication/uart.hpp"
+#include "communication_vigile/uart.hpp"
 
 int main()
 {

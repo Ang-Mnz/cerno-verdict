@@ -20,6 +20,9 @@ struct ApplicationConfig
 	std::uint16_t tcp_port = 5000;
 
 	std::string camera_url;
+
+    std::string python_path;
+    std::string camera_controller_path;
 };
 
 ApplicationConfig loadApplicationConfig();

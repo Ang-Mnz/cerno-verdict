@@ -1,7 +1,7 @@
 # Tests UART
 add_executable(uart_test
-    communication/uart_test.cpp
-    ../praetorium/communication/uart.cpp
+    communication_vigile/uart_test.cpp
+    ../praetorium/communication_vigile/uart.cpp
 )
 
 target_include_directories(uart_test

@@ -1,4 +1,4 @@
-#include "communication/communication.hpp"
+#include "communication_vigile/communication.hpp"
 
 #include <stdexcept>
 
