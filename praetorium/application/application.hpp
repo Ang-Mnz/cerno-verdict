@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <chrono>
 
 #include "communication_vigile/communication.hpp"
 
@@ -22,6 +23,7 @@ public:
 private:
 
 	bool active_ = false;
+	std::chrono::steady_clock::time_point last_motion_time_;
 
 	ApplicationConfig config_;
 

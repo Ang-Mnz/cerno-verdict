@@ -23,6 +23,8 @@ struct ApplicationConfig
 
     std::string python_path;
     std::string camera_controller_path;
+
+	std::uint32_t camera_idle_timeout_seconds = 10;
 };
 
 ApplicationConfig loadApplicationConfig();

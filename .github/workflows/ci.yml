@@ -11,6 +11,7 @@ permissions:
   contents: read
 
 jobs:
+  # Compilation et tests
   build-and-test:
     name: Build and test
     runs-on: ubuntu-24.04
@@ -41,6 +42,7 @@ jobs:
       - name: Run software tests
         run: ctest --test-dir build --output-on-failure -L software
 
+  # Compilation pour raspberry
   build-arm64:
     name: Build Raspberry Pi ARM64
     runs-on: ubuntu-24.04-arm
@@ -73,7 +75,7 @@ jobs:
           name: cerno-verdict-arm64
           path: build/cerno_verdict
           if-no-files-found: error
-
+  # Publication
   release-arm64:
     name: Publish Raspberry Pi release
     needs:
@@ -100,7 +102,7 @@ jobs:
           target_commitish: ${{ github.sha }}
           generate_release_notes: true
           files: dist/cerno_verdict
-
+  # Déploiement sur le Raspberry
   deploy:
     name: Deploy to Raspberry Pi
     needs:

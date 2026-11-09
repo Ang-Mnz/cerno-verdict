@@ -79,6 +79,10 @@ ApplicationConfig loadApplicationConfig()
 		{
 			config.camera_controller_path = value;
 		}
+		else if (key == "CAMERA_IDLE_TIMEOUT_SECONDS")
+		{
+			config.camera_idle_timeout_seconds = std::stoul(value);
+		}
     }
 
     if (config.camera_url.empty())

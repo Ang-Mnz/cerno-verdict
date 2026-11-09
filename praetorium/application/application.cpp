@@ -89,6 +89,12 @@ void Application::run()
         bool motion_detected =
             motion_detector_.detect(frame, motion_mask);
 
+		// Enregistrement de l'instantr du dernier mouvement
+		if (motion_detected)
+		{
+			last_motion_time_ = std::chrono::steady_clock::now();
+		}
+
         // Gestion de l'événement (Enregistrement d'image etc...)
         MotionState motion_state =
             motion_manager_.process(frame, motion_detected);
@@ -101,6 +107,26 @@ void Application::run()
         else if (motion_state == MotionState::ENDED)
         {
             process_send_command("CLEAR");
+        }
+
+		// Vérification du délai d'inactivité de la caméra
+        auto now = std::chrono::steady_clock::now();
+
+		// Si l'inactivitée dépasse un certain délai
+        if (now - last_motion_time_ >=
+            std::chrono::seconds(config_.camera_idle_timeout_seconds))
+        {
+            std::cout << "Aucun mouvement détecté : mise en veille de la caméra\n";
+
+            motion_manager_.stop();
+            process_send_command("CLEAR");
+
+            camera_stream_.close();
+            camera_controller_.set_privacy_mode(true);
+
+            active_ = false;
+
+            continue;
         }
 
         // Affichage de fenetres
@@ -159,6 +185,7 @@ void Application::process_received_command(const std::string& command)
         if (camera_stream_.open(config_.camera_url))
         {
             active_ = true;
+			last_motion_time_ = std::chrono::steady_clock::now();
         }
         else
         {
