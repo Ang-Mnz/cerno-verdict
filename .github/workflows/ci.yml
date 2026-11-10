@@ -103,7 +103,7 @@ jobs:
           generate_release_notes: true
           files: dist/cerno_verdict
   # Déploiement sur le Raspberry
-  deploy:
+deploy:
     name: Deploy to Raspberry Pi
     needs:
       - build-and-test
@@ -119,11 +119,21 @@ jobs:
       id-token: write
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Download ARM64 binary
         uses: actions/download-artifact@v4
         with:
           name: cerno-verdict-arm64
           path: dist
+
+      - name: Prepare camera controller archive
+        run: |
+          tar -czf dist/camera-control.tar.gz \
+            -C praetorium \
+            camera_control/camera_controller.py \
+            camera_control/requirements.txt
 
       - name: Connect to Tailscale
         uses: tailscale/github-action@v4
@@ -143,12 +153,17 @@ jobs:
           chmod 600 ~/.ssh/cerno_deploy
           ssh-keyscan -H 100.119.172.2 >> ~/.ssh/known_hosts
 
-      - name: Transfer executable to Raspberry Pi
+      - name: Transfer deployment files
         run: |
           scp -i ~/.ssh/cerno_deploy \
             -o IdentitiesOnly=yes \
             dist/cerno_verdict \
             cerno-deploy@100.119.172.2:/home/cerno-deploy/incoming/cerno_verdict.new
+
+          scp -i ~/.ssh/cerno_deploy \
+            -o IdentitiesOnly=yes \
+            dist/camera-control.tar.gz \
+            cerno-deploy@100.119.172.2:/home/cerno-deploy/incoming/camera-control.tar.gz
 
       - name: Install and restart application
         run: |
