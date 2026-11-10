@@ -170,4 +170,4 @@ jobs:
             ssh -i ~/.ssh/cerno_deploy \
               -o IdentitiesOnly=yes \
               cerno-deploy@100.119.172.2 \
-              'sudo -n /bin/bash /usr/local/sbin/deploy-cerno-verdict'
+              'sudo -n /usr/local/sbin/deploy-cerno-verdict'
