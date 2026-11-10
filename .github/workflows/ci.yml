@@ -103,71 +103,71 @@ jobs:
           generate_release_notes: true
           files: dist/cerno_verdict
   # Déploiement sur le Raspberry
-deploy:
-    name: Deploy to Raspberry Pi
-    needs:
-      - build-and-test
-      - build-arm64
-      - release-arm64
+  deploy:
+      name: Deploy to Raspberry Pi
+      needs:
+        - build-and-test
+        - build-arm64
+        - release-arm64
 
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
-    runs-on: ubuntu-latest
+      runs-on: ubuntu-latest
 
-    permissions:
-      contents: read
-      id-token: write
+      permissions:
+        contents: read
+        id-token: write
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      steps:
+        - name: Checkout repository
+          uses: actions/checkout@v4
 
-      - name: Download ARM64 binary
-        uses: actions/download-artifact@v4
-        with:
-          name: cerno-verdict-arm64
-          path: dist
+        - name: Download ARM64 binary
+          uses: actions/download-artifact@v4
+          with:
+            name: cerno-verdict-arm64
+            path: dist
 
-      - name: Prepare camera controller archive
-        run: |
-          tar -czf dist/camera-control.tar.gz \
-            -C praetorium \
-            camera_control/camera_controller.py \
-            camera_control/requirements.txt
+        - name: Prepare camera controller archive
+          run: |
+            tar -czf dist/camera-control.tar.gz \
+              -C praetorium \
+              camera_control/camera_controller.py \
+              camera_control/requirements.txt
 
-      - name: Connect to Tailscale
-        uses: tailscale/github-action@v4
-        with:
-          oauth-client-id: ${{ secrets.TS_OIDC_CLIENT_ID }}
-          audience: ${{ secrets.TS_OIDC_AUDIENCE }}
-          tags: tag:github-actions
-          ping: 100.119.172.2
+        - name: Connect to Tailscale
+          uses: tailscale/github-action@v4
+          with:
+            oauth-client-id: ${{ secrets.TS_OIDC_CLIENT_ID }}
+            audience: ${{ secrets.TS_OIDC_AUDIENCE }}
+            tags: tag:github-actions
+            ping: 100.119.172.2
 
-      - name: Configure SSH
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
-        run: |
-          mkdir -p ~/.ssh
-          chmod 700 ~/.ssh
-          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/cerno_deploy
-          chmod 600 ~/.ssh/cerno_deploy
-          ssh-keyscan -H 100.119.172.2 >> ~/.ssh/known_hosts
+        - name: Configure SSH
+          env:
+            SSH_PRIVATE_KEY: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
+          run: |
+            mkdir -p ~/.ssh
+            chmod 700 ~/.ssh
+            printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/cerno_deploy
+            chmod 600 ~/.ssh/cerno_deploy
+            ssh-keyscan -H 100.119.172.2 >> ~/.ssh/known_hosts
 
-      - name: Transfer deployment files
-        run: |
-          scp -i ~/.ssh/cerno_deploy \
-            -o IdentitiesOnly=yes \
-            dist/cerno_verdict \
-            cerno-deploy@100.119.172.2:/home/cerno-deploy/incoming/cerno_verdict.new
+        - name: Transfer deployment files
+          run: |
+            scp -i ~/.ssh/cerno_deploy \
+              -o IdentitiesOnly=yes \
+              dist/cerno_verdict \
+              cerno-deploy@100.119.172.2:/home/cerno-deploy/incoming/cerno_verdict.new
 
-          scp -i ~/.ssh/cerno_deploy \
-            -o IdentitiesOnly=yes \
-            dist/camera-control.tar.gz \
-            cerno-deploy@100.119.172.2:/home/cerno-deploy/incoming/camera-control.tar.gz
+            scp -i ~/.ssh/cerno_deploy \
+              -o IdentitiesOnly=yes \
+              dist/camera-control.tar.gz \
+              cerno-deploy@100.119.172.2:/home/cerno-deploy/incoming/camera-control.tar.gz
 
-      - name: Install and restart application
-        run: |
-          ssh -i ~/.ssh/cerno_deploy \
-            -o IdentitiesOnly=yes \
-            cerno-deploy@100.119.172.2 \
-            'sudo -n /usr/local/sbin/deploy-cerno-verdict'
+        - name: Install and restart application
+          run: |
+            ssh -i ~/.ssh/cerno_deploy \
+              -o IdentitiesOnly=yes \
+              cerno-deploy@100.119.172.2 \
+              'sudo -n /usr/local/sbin/deploy-cerno-verdict'
