@@ -28,10 +28,15 @@ jobs:
           restore-keys: |
             apt-ubuntu-24.04-
 
-      - name: Install dependencies
+      - name: Check build tools
+        run: |
+          cmake --version
+          g++ --version
+
+      - name: Install OpenCV
         run: |
           sudo apt-get update
-          sudo apt-get -o APT::Keep-Downloaded-Packages=true install -y cmake g++ libopencv-dev
+          sudo apt-get -o APT::Keep-Downloaded-Packages=true install -y libopencv-dev
 
       - name: Configure CMake
         run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug
