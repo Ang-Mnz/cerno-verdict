@@ -24,7 +24,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: /var/cache/apt/archives
-          key: apt-ubuntu-24.04-opencv-v1
+          key: apt-ubuntu-24.04-opencv-v2
           restore-keys: |
             apt-ubuntu-24.04-
 
@@ -36,7 +36,12 @@ jobs:
       - name: Install OpenCV
         run: |
           sudo apt-get update
-          sudo apt-get -o APT::Keep-Downloaded-Packages=true install -y libopencv-dev
+          sudo apt-get -o APT::Keep-Downloaded-Packages=true install -y \
+            libopencv-core-dev \
+            libopencv-imgproc-dev \
+            libopencv-videoio-dev \
+            libopencv-imgcodecs-dev \
+            libopencv-highgui-dev
 
       - name: Configure CMake
         run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug

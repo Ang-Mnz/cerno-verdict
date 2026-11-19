@@ -8,7 +8,13 @@ project(cerno_verdict
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(OpenCV REQUIRED)
+find_package(OpenCV REQUIRED COMPONENTS
+    core
+    imgproc
+    videoio
+    imgcodecs
+    highgui
+)
 
 # Application principale
 file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
