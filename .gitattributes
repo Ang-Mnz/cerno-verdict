@@ -1,0 +1,8 @@
+/mvnw text eol=lf
+*.cmd text eol=crlf
+# Fins de ligne par défaut
+* text=auto eol=lf
+
+# Maven Wrapper
+/senatus/mvnw text eol=lf
+*.cmd text eol=crlf

@@ -26,6 +26,34 @@ firmware/stm32/.metadata/
 # STM32CubeIDE workspace metadata
 .metadata/
 
+# Java / Maven (Senatus)
+
+# Maven
+target/
+.mvn/wrapper/maven-wrapper.jar
+
+# Spring Tool Suite / Eclipse
+.apt_generated/
+.classpath
+.factorypath
+.project
+.settings/
+.springBeans
+.sts4-cache/
+
+# NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+
 # Images events
 events/
 
