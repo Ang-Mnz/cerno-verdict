@@ -139,3 +139,8 @@ TcpReceiveStatus Tcp::receive(std::string& data)
 
     return TcpReceiveStatus::ERROR;
 }
+
+bool Tcp::is_connected() const
+{
+    return socket_ >= 0;
+}

@@ -15,6 +15,8 @@ public:
     bool send(const std::string& data);
 	TcpReceiveStatus receive(std::string& data);
 
+	bool is_connected() const;
+
 private:
     std::unique_ptr<Uart> uart_;
     std::unique_ptr<Tcp> tcp_;

@@ -57,3 +57,18 @@ TcpReceiveStatus Communication::receive(std::string& data)
 
     return TcpReceiveStatus::ERROR;
 }
+
+bool Communication::is_connected() const
+{
+    if (uart_)
+    {
+        return uart_->is_connected();
+    }
+
+    if (tcp_)
+    {
+        return tcp_->is_connected();
+    }
+
+    return false;
+}

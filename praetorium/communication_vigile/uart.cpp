@@ -124,3 +124,8 @@ bool Uart::send(const std::string& data)
     return write(fd_, data.data(), data.size()) ==
            static_cast<ssize_t>(data.size());
 }
+
+bool Uart::is_connected() const
+{
+    return fd_ >= 0;
+}

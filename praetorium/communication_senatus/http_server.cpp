@@ -3,8 +3,14 @@
 #include <iostream>
 #include <stdexcept>
 
-HttpServer::HttpServer(const std::string& host, std::uint16_t port)
-    : host_(host), port_(port)
+HttpServer::HttpServer(
+    const std::string& host,
+    std::uint16_t port,
+    Communication& communication
+)
+    : host_(host),
+      port_(port),
+      communication_(communication)
 {
 }
 
@@ -31,6 +37,20 @@ void HttpServer::start()
             "application/json"
         );
     });
+
+	// Tester vigile
+	server_.Get("/vigile/health",
+    [this](const httplib::Request&, httplib::Response& response)
+	{
+		const bool connected = communication_.is_connected();
+
+		const std::string status = connected ? "UP" : "DOWN";
+
+		response.set_content(
+			R"({"component":"Vigile","status":")" + status + R"("})",
+			"application/json"
+		);
+	});
 
     // Réservation de l'adresse et du port.
     if (!server_.bind_to_port(host_, port_))

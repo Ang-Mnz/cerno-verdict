@@ -14,7 +14,7 @@ Application::Application(bool headless)
           config_.camera_controller_path
       	),
 		communication_(config_),
-		http_server_(config_.http_host, config_.http_port),
+		http_server_(config_.http_host, config_.http_port, communication_),
 	  	display_(!headless)
 {
 }

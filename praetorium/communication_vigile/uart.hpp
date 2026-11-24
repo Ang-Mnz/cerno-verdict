@@ -12,6 +12,8 @@ public:
     bool send(uint8_t value);
     bool send(const std::string& data);
 
+	bool is_connected() const;
+
 private:
 
     int fd_;

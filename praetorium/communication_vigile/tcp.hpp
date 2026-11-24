@@ -21,8 +21,11 @@ public:
     bool send(const std::string& data);
 	TcpReceiveStatus receive(std::string& data);
 
+	bool is_connected() const;
+
 private:
     std::string host_;
     std::uint16_t port_;
     int socket_;
+
 };
