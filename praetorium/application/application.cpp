@@ -14,12 +14,16 @@ Application::Application(bool headless)
           config_.camera_controller_path
       	),
 		communication_(config_),
+		http_server_(config_.http_host, config_.http_port),
 	  	display_(!headless)
 {
 }
 
 void Application::run()
 {
+	// Démarrage du serveur HTTP permettant l'écoute de senatus
+	http_server_.start();
+
 	// Au démarrage, la caméra reste en mode confidentialité
 	camera_controller_.start();
     camera_controller_.set_privacy_mode(true);
@@ -152,6 +156,7 @@ void Application::run()
 	camera_controller_.stop();
 
     display_.close();
+	http_server_.stop();
 }
 
 void Application::process_send_command(const std::string& command)

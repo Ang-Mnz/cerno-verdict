@@ -10,6 +10,17 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(OpenCV REQUIRED)
 
+# Télécharger automatiquement: cpp-httplib
+include(FetchContent)
+
+FetchContent_Declare(
+    httplib
+    GIT_REPOSITORY https://github.com/yhirose/cpp-httplib.git
+    GIT_TAG v0.18.3
+)
+
+FetchContent_MakeAvailable(httplib)
+
 # Application principale
 file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
     "${CMAKE_CURRENT_SOURCE_DIR}/praetorium/*.cpp"
@@ -27,6 +38,7 @@ target_include_directories(cerno_verdict
 target_link_libraries(cerno_verdict
     PRIVATE
         ${OpenCV_LIBS}
+		httplib::httplib
 )
 
 # Tests

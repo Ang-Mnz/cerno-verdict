@@ -4,6 +4,7 @@
 #include <chrono>
 
 #include "communication_vigile/communication.hpp"
+#include "communication_senatus/http_server.hpp"
 
 #include "vision/camera_stream/camera_stream.hpp"
 #include "vision/motion_detector.hpp"
@@ -30,6 +31,8 @@ private:
 	CameraController camera_controller_;
 
     Communication communication_;
+	HttpServer http_server_;
+
 	CameraStream camera_stream_;
 	MotionDetector motion_detector_;
 	VisionDisplay display_;

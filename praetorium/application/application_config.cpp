@@ -71,6 +71,14 @@ ApplicationConfig loadApplicationConfig()
 		{
 			config.tcp_port = std::stoul(value);
 		}
+		else if (key == "HTTP_HOST")
+		{
+			config.http_host = value;
+		}
+		else if (key == "HTTP_PORT")
+		{
+			config.http_port = std::stoul(value);
+		}
 		else if (key == "CERNO_PYTHON_PATH")
 		{
 			config.python_path = value;
